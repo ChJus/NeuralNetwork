@@ -6,7 +6,7 @@ public class TrainMNIST {
   public static void main(String[] args) throws FileNotFoundException {
     Network network = new Network(
         new int[]{784, 128, 10},
-        new ActivationFunction[]{ActivationFunction.SIGMOID, ActivationFunction.SIGMOID},
+        new ActivationFunction[]{ActivationFunction.LEAKY_RELU, ActivationFunction.TANH},
         Initializer.GAUSSIAN);
 
     double[][] inputs = new double[42000][784];
@@ -26,6 +26,6 @@ public class TrainMNIST {
     }
 
     for (int i = 0; i < 10; i++)
-      network.train(inputs, targets, 0.002, Error.MEAN_SQUARED, Optimizer.MOMENTUM, 50);
+      network.train(inputs, targets, 0.005, Error.CROSS_ENTROPY, Optimizer.NONE, 10);
   }
 }

@@ -1,3 +1,3 @@
 enum Error {
-  MEAN_SQUARED
+  MEAN_SQUARED, CROSS_ENTROPY
 }

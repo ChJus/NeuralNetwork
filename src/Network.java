@@ -55,19 +55,24 @@ class Network {
             errorArray[j] = result[j] - targets[i][j];
             printError += Math.pow((result[j] - targets[i][j]), 2) * 0.5;
             break;
+          case CROSS_ENTROPY:
+            errorArray[j] = result[j] - targets[i][j];
+            double d = targets[i][j] * Math.log(result[j]);
+            printError -= Double.isNaN(d) ? 0 : d;
         }
       }
-      layers[layers.length - 1].learn(null, errorArray, learningRate, optimizer);
+      layers[layers.length - 1].learn(null, error, errorArray, learningRate, optimizer);
       if (counter % BATCH_SIZE == 0) {
         layers[layers.length - 1].updateWeights(BATCH_SIZE);
       }
       for (int l = layers.length - 2; l >= 0; l--) {
-        layers[l].learn(layers[l + 1], null, learningRate, optimizer);
+        layers[l].learn(layers[l + 1], error, null, learningRate, optimizer);
         if (counter % BATCH_SIZE == 0) {
           layers[l].updateWeights(BATCH_SIZE);
         }
       }
     }
+    printError /= inputs.length;
     System.out.println(printError + " " + correct + "/" + inputs.length);
   }
 }

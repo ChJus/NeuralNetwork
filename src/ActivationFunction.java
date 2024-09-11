@@ -1,3 +1,3 @@
 enum ActivationFunction {
-  SIGMOID, TANH, RELU, LEAKY_RELU
+  SIGMOID, TANH, RELU, LEAKY_RELU, SOFTMAX
 }

@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 class Layer implements Serializable {
   static Random random = new Random();
@@ -35,7 +36,7 @@ class Layer implements Serializable {
     for (int i = 0; i < in; i++) {
       for (int j = 0; j < out; j++) {
         weights[i][j] = switch (initializer) {
-          case GAUSSIAN -> random.nextGaussian();
+          case GAUSSIAN -> random.nextGaussian(0, 0.1);
           case RANDOM -> random.nextDouble() - 0.5;
           case ZERO -> 0;
         };
@@ -59,6 +60,16 @@ class Layer implements Serializable {
 
     double[] outputs = new double[weights[0].length];
 
+    IntStream.range(0, weights[0].length).parallel().forEach(j -> {
+      for (int i = 0; i < weights.length; i++) {
+        outputs[j] += weights[i][j] * inputs[i];
+      }
+      outputs[j] += biases[j];
+      this.weightedSumOutput[j] = outputs[j];
+      outputs[j] = activationFunction(outputs[j], false);
+    });
+
+    /*
     for (int j = 0; j < weights[0].length; j++) {
       for (int i = 0; i < weights.length; i++) {
         outputs[j] += weights[i][j] * inputs[i];
@@ -67,6 +78,7 @@ class Layer implements Serializable {
       this.weightedSumOutput[j] = outputs[j];
       outputs[j] = activationFunction(outputs[j], false);
     }
+     */
 
     return outputs;
   }
@@ -95,7 +107,7 @@ class Layer implements Serializable {
     epsilon = 1e-8;
   }
 
-  void learn(Layer nextLayer, double[] error, double learningRate, Optimizer optimizer) {
+  void learn(Layer nextLayer, Error lossType, double[] error, double learningRate, Optimizer optimizer) {
     resetCache();
     this.learningRate = learningRate;
     if (error == null && isOutputLayer || !isOutputLayer && nextLayer == null)
@@ -103,18 +115,12 @@ class Layer implements Serializable {
     if (error != null && error.length != weights[0].length)
       throw new IllegalArgumentException("Mismatch between error array and output neurons array.");
 
-    switch (optimizer) {
-      case NONE -> learnNormal(nextLayer, error);
-      case ADAM -> learnAdam(nextLayer, error);
-      case NADAM -> learnNadam(nextLayer, error);
-      case MOMENTUM -> learnMomentum(nextLayer, error);
-    }
-  }
-
-  void learnNormal(Layer nextLayer, double[] error) {
     if (isOutputLayer) {
       for (int j = 0; j < weights[0].length; j++) {
-        deltaWeights[j] = error[j] * activationFunction(weightedSumOutput[j], true);
+        deltaWeights[j] = switch (lossType) {
+          case Error.MEAN_SQUARED -> error[j] * activationFunction(weightedSumOutput[j], true);
+          case Error.CROSS_ENTROPY -> error[j];
+        };
       }
     } else {
       for (int j = 0; j < nextLayer.weights.length; j++) {
@@ -125,6 +131,15 @@ class Layer implements Serializable {
       }
     }
 
+    switch (optimizer) {
+      case NONE -> learnNormal();
+      case ADAM -> learnAdam();
+      case NADAM -> learnNadam();
+      case MOMENTUM -> learnMomentum();
+    }
+  }
+
+  void learnNormal() {
     for (int i = 0; i < weights.length; i++) {
       for (int j = 0; j < weights[i].length; j++) {
         // error is assumed to be given by network and represents derivative of error function values
@@ -140,25 +155,13 @@ class Layer implements Serializable {
   double[][] oldWeightsAdjustments = null;
   double[] oldBiasesAdjustments = null;
 
-  void learnMomentum(Layer nextLayer, double[] error) {
+  void learnMomentum() {
     if (oldWeightsAdjustments == null || oldBiasesAdjustments == null) {
       oldWeightsAdjustments = new double[weights.length][weights[0].length];
       oldBiasesAdjustments = new double[biases.length];
     }
 
     double mu = 0.9;
-    if (isOutputLayer) {
-      for (int j = 0; j < weights[0].length; j++) {
-        deltaWeights[j] = error[j] * activationFunction(weightedSumOutput[j], true);
-      }
-    } else {
-      for (int j = 0; j < nextLayer.weights.length; j++) {
-        for (int l = 0; l < nextLayer.weights[0].length; l++) {
-          deltaWeights[j] += nextLayer.weights[j][l] * nextLayer.deltaWeights[l];
-        }
-        deltaWeights[j] *= activationFunction(weightedSumOutput[j], true);
-      }
-    }
 
     for (int i = 0; i < weights.length; i++) {
       for (int j = 0; j < weights[i].length; j++) {
@@ -181,25 +184,12 @@ class Layer implements Serializable {
   double[][] v = null, v_hat = null;
   double beta1 = 0.9, beta2 = 0.999, epsilon = 1e-8;
 
-  void learnAdam(Layer nextLayer, double[] error) {
+  void learnAdam() {
     if (m == null && v == null) {
       m = new double[weights.length][weights[0].length];
       v = new double[weights.length][weights[0].length];
       m_hat = new double[weights.length][weights[0].length];
       v_hat = new double[weights.length][weights[0].length];
-    }
-
-    if (isOutputLayer) {
-      for (int j = 0; j < weights[0].length; j++) {
-        deltaWeights[j] = error[j] * activationFunction(weightedSumOutput[j], true);
-      }
-    } else {
-      for (int j = 0; j < nextLayer.weights.length; j++) {
-        for (int l = 0; l < nextLayer.weights[0].length; l++) {
-          deltaWeights[j] += nextLayer.weights[j][l] * nextLayer.deltaWeights[l];
-        }
-        deltaWeights[j] *= activationFunction(weightedSumOutput[j], true);
-      }
     }
 
     for (int i = 0; i < weights.length; i++) {
@@ -219,7 +209,7 @@ class Layer implements Serializable {
     }
   }
 
-  void learnNadam(Layer nextLayer, double[] error) {
+  void learnNadam() {
     double beta1 = 0.9, beta2 = 0.999, epsilon = 1e-8;
 
     if (m == null && v == null) {
@@ -227,19 +217,6 @@ class Layer implements Serializable {
       v = new double[weights.length][weights[0].length];
       m_hat = new double[weights.length][weights[0].length];
       v_hat = new double[weights.length][weights[0].length];
-    }
-
-    if (isOutputLayer) {
-      for (int j = 0; j < weights[0].length; j++) {
-        deltaWeights[j] = error[j] * activationFunction(weightedSumOutput[j], true);
-      }
-    } else {
-      for (int j = 0; j < nextLayer.weights.length; j++) {
-        for (int l = 0; l < nextLayer.weights[0].length; l++) {
-          deltaWeights[j] += nextLayer.weights[j][l] * nextLayer.deltaWeights[l];
-        }
-        deltaWeights[j] *= activationFunction(weightedSumOutput[j], true);
-      }
     }
 
     for (int i = 0; i < weights.length; i++) {
@@ -259,6 +236,8 @@ class Layer implements Serializable {
     }
   }
 
+  double[] softmaxCache = null;
+
   double activationFunction(double x, boolean derivative) {
     switch (activationFunction) {
       case RELU:
@@ -273,6 +252,12 @@ class Layer implements Serializable {
       case TANH:
         if (!derivative) return (Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x));
         else return 1 - Math.pow((Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x)), 2);
+      case SOFTMAX:
+        if (!derivative) {
+
+        } else {
+
+        } // todo: implement softmax
     }
     throw new RuntimeException(activationFunction + " is not a valid activation function.");
   }

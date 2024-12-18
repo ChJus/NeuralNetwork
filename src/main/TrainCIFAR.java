@@ -28,7 +28,7 @@ public class TrainCIFAR {
     objectInputStream.close();
 
     for (int i = 0; i < 5; i++) {
-      network.train(input, target, 0.001, Error.MEAN_SQUARED, Optimizer.DEMON_ADAM, 100);
+      network.train(input, target, 0.001, Error.MEAN_SQUARED, Optimizer.MOMENTUM, 100);
       NetworkFactory.serialize(network, "cifar-10-network-temp.ser");
     }
 

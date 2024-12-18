@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MNIST</title>
+  <style>
+      .best {
+          font-weight: bold;
+      }
+  </style>
+</head>
+<body>
+<canvas id="visible-canvas"></canvas>
+<canvas style="display: none;" id="canvas"></canvas>
+<div id="probabilities">
+  <div>airplane</div>
+  <div>automobile</div>
+  <div>bird</div>
+  <div>cat</div>
+  <div>deer</div>
+  <div>dog</div>
+  <div>frog</div>
+  <div>horse</div>
+  <div>ship</div>
+  <div>truck</div>
+</div>
+</body>
+<script>
+  class Network {
+    layers;
+
+    constructor(layers) {
+      this.layers = layers;
+    }
+
+    feedforward(inputs) {
+      for (let l of this.layers) {
+        inputs = l.feedforward(inputs);
+      }
+      return inputs;
+    }
+
+    static getMax(arr) {
+      let index = 0;
+      let value = -Infinity;
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] > value) {
+          index = i;
+          value = arr[i];
+        }
+      }
+      return index;
+    }
+  }
+
+  class Layer {
+    activationFunction;
+    isOutputLayer;
+    weights;
+    biases;
+
+    constructor(weights, biases, isOutputLayer, activationFunction) {
+      this.isOutputLayer = isOutputLayer;
+      this.activationFunction = activationFunction;
+      this.weights = weights;
+      this.biases = biases;
+    }
+
+    feedforward(inputs) {
+      if (inputs.length !== this.weights.length)
+        console.error("Input size " + inputs.length + " does not match weights size " + this.weights.length);
+
+      let outputs = new Array(this.weights[0].length).fill(0);
+
+      for (let j = 0; j < this.weights[0].length; j++) {
+        for (let i = 0; i < this.weights.length; i++) {
+          outputs[j] += this.weights[i][j] * inputs[i];
+        }
+        outputs[j] += this.biases[j];
+        outputs[j] = this.af(outputs[j], false);
+      }
+
+      return outputs;
+    }
+
+    af(x, derivative) {
+      switch (this.activationFunction) {
+        case "RELU":
+          if (!derivative) return Math.max(x, 0);
+          else return x < 0 ? 0 : 1;
+        case "LEAKY_RELU":
+          if (!derivative) return x <= 0 ? 0.01 * x : x;
+          else return x <= 0 ? 0.01 : 1;
+        case "SIGMOID":
+          if (!derivative) return 1.0 / (1.0 + Math.exp(-x));
+          else return (1.0 / (1.0 + Math.exp(-x))) * (1.0 - (1.0 / (1.0 + Math.exp(-x))));
+        case "TANH":
+          if (!derivative) return (Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x));
+          else return 1 - Math.pow((Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x)), 2);
+      }
+      console.error(this.activationFunction + " is not a valid activation function.");
+    }
+  }
+
+
+  class NetworkFactory {
+    static async getTextAsync(url) {
+      let text = await fetch(url)
+      return await text.text();
+    }
+
+    static createFrom(textFilepath) {
+      return (NetworkFactory.getTextAsync(textFilepath)).then(d => {
+        let text = d.trim().split("\n")
+
+        let build = text[0].split(" ");
+        let activations = text[1].split(" ");
+
+        let layers = new Array(build.length - 1);
+        let index = 2;
+
+        for (let i = 0; i < layers.length; i++) {
+          let weights = new Array(parseInt(build[i]));
+          let biases = new Array(parseInt(build[i + 1]));
+
+          let w = text[index++].replaceAll("[", "").replaceAll("]", "\n").replaceAll(",", "").trim().split("\n");
+          let b = text[index++].replaceAll("[", "").replaceAll("]", "").split(", ");
+
+          for (let j = 0; j < w.length; j++) {
+            let vals = w[j].trim().split(" ");
+            weights[j] = new Array(parseInt(build[i + 1]));
+            for (let k = 0; k < vals.length; k++) {
+              weights[j][k] = parseFloat(vals[k]);
+            }
+          }
+
+          for (let j = 0; j < b.length; j++) {
+            biases[j] = parseFloat(b[j]);
+          }
+
+          index++;
+
+          layers[i] = new Layer(weights, biases, i === layers.length - 1, activations[i]);
+        }
+
+        return new Network(layers);
+      });
+    }
+  }
+
+  NetworkFactory.createFrom("mnist-network.txt").then((network) => {
+    setInterval(() => example(network), 3000);
+  });
+
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  let labels = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+  document.getElementById("visible-canvas").getContext("2d").scale(4, 4)
+
+  function example(network) {
+    let i = Math.floor(Math.random() * 300) + 1;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = "mnist-examples/" + i + ".png";
+
+    img.addEventListener("load", () => {
+      ctx.drawImage(img, 0, 0);
+      document.getElementById("visible-canvas").getContext("2d").drawImage(img, 0, 0);
+
+      img.style.display = "none";
+
+      const imgData = ctx.getImageData(0, 0, 28, 28);
+      const data = imgData.data;
+
+      let d = [];
+
+      for (let i = 0; i < data.length; i += 4) {
+        const red = data[i] / 255.0;
+        const green = data[i + 1] / 255.0;
+        const blue = data[i + 2] / 255.0;
+        d.push((red + green + blue) / 3.0);
+      }
+      console.log(d)
+
+      let results = network.feedforward(d);
+      for (let i = 0; i < 10; i++) {
+        document.querySelectorAll("#probabilities div")[i].innerText = labels[i] + ": " + results[i].toFixed(3);
+        document.querySelectorAll("#probabilities div")[i].classList.remove("best")
+      }
+      document.querySelectorAll("#probabilities div")[Network.getMax(results)].classList.add("best");
+    });
+  }
+</script>
+</html>

@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>CIFAR-10</title>
+  <script src="jszip.min.js"></script>
+  <script src="jszip-utils.min.js"></script>
+
   <style>
       .best {
           font-weight: bold;
@@ -102,54 +105,56 @@
     }
   }
 
-
   class NetworkFactory {
     static async getTextAsync(url) {
       let text = await fetch(url)
       return await text.text();
     }
 
-    static createFrom(textFilepath) {
-      return (NetworkFactory.getTextAsync(textFilepath)).then(d => {
-        let text = d.trim().split("\n")
+    static async createFrom(data) {
+      return JSZip.loadAsync(data).then((zip) => {
+        return (zip.file("cifar-10-network.txt").async("text")).then((d) => {
+          let text = d.trim().split("\n")
 
-        let build = text[0].split(" ");
-        let activations = text[1].split(" ");
+          let build = text[0].split(" ");
+          let activations = text[1].split(" ");
 
-        let layers = new Array(build.length - 1);
-        let index = 2;
+          let layers = new Array(build.length - 1);
+          let index = 2;
 
-        for (let i = 0; i < layers.length; i++) {
-          let weights = new Array(parseInt(build[i]));
-          let biases = new Array(parseInt(build[i + 1]));
+          for (let i = 0; i < layers.length; i++) {
+            let weights = new Array(parseInt(build[i]));
+            let biases = new Array(parseInt(build[i + 1]));
 
-          let w = text[index++].replaceAll("[", "").replaceAll("]", "\n").replaceAll(",", "").trim().split("\n");
-          let b = text[index++].replaceAll("[", "").replaceAll("]", "").split(", ");
+            let w = text[index++].replaceAll("[", "").replaceAll("]", "\n").replaceAll(",", "").trim().split("\n");
+            let b = text[index++].replaceAll("[", "").replaceAll("]", "").split(", ");
 
-          for (let j = 0; j < w.length; j++) {
-            let vals = w[j].trim().split(" ");
-            weights[j] = new Array(parseInt(build[i + 1]));
-            for (let k = 0; k < vals.length; k++) {
-              weights[j][k] = parseFloat(vals[k]);
+            for (let j = 0; j < w.length; j++) {
+              let vals = w[j].trim().split(" ");
+              weights[j] = new Array(parseInt(build[i + 1]));
+              for (let k = 0; k < vals.length; k++) {
+                weights[j][k] = parseFloat(vals[k]);
+              }
             }
+
+            for (let j = 0; j < b.length; j++) {
+              biases[j] = parseFloat(b[j]);
+            }
+
+            index++;
+            layers[i] = new Layer(weights, biases, i === layers.length - 1, activations[i]);
           }
-
-          for (let j = 0; j < b.length; j++) {
-            biases[j] = parseFloat(b[j]);
-          }
-
-          index++;
-
-          layers[i] = new Layer(weights, biases, i === layers.length - 1, activations[i]);
-        }
-
-        return new Network(layers);
+          return new Network(layers);
+        });
       });
     }
   }
 
-  NetworkFactory.createFrom("cifar-10-network.txt").then((network) => {
-    setInterval(() => example(network), 3000);
+  JSZipUtils.getBinaryContent("cifar-10-network.txt.zip", function (err, data) {
+    if (err) throw err;
+    NetworkFactory.createFrom(data).then((network) => {
+      setInterval(() => example(network), 3000);
+    });
   });
 
   const canvas = document.getElementById("canvas");

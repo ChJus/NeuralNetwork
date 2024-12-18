@@ -1,5 +1,8 @@
 package lib;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
@@ -8,7 +11,7 @@ import java.util.stream.IntStream;
 public class Layer implements Serializable {
   private static final Random random = new Random();
   public ActivationFunction activationFunction;
-  boolean isOutputLayer;
+  public boolean isOutputLayer;
 
   double[] inputs;
   double[] weightedSumOutput; // before applying activation function
@@ -158,8 +161,8 @@ public class Layer implements Serializable {
 
   transient double[][] velocity;
   transient double[][] moment;
-  transient final double beta1 = 0.9;
-  transient final double beta2 = 0.999;
+  transient double beta1 = 0.9;
+  transient double beta2 = 0.999;
   transient double epsilon = 1e-8;
   transient double t = 0;
   transient double T;
@@ -204,7 +207,7 @@ public class Layer implements Serializable {
   }
 
   void adam() {
-    if (moment == null) {
+    if (moment == null || velocity == null) {
       velocity = new double[weights.length + 1][weights[0].length];
       moment = new double[weights.length + 1][weights[0].length];
     }
@@ -230,7 +233,7 @@ public class Layer implements Serializable {
   }
 
   void demonAdam() {
-    if (moment == null) {
+    if (moment == null || velocity == null) {
       velocity = new double[weights.length + 1][weights[0].length];
       moment = new double[weights.length + 1][weights[0].length];
     }
@@ -287,5 +290,22 @@ public class Layer implements Serializable {
       biases[j] += biasesAdjustments[j] / BATCH_SIZE;
     }
     Arrays.fill(biasesAdjustments, 0);
+  }
+
+  @Serial
+  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject(); // Deserialize the non-transient data
+
+    // re-initialize transient fields to a well-defined value
+    learningRate = 0.0;
+    velocity = null;
+    moment = null;
+    beta1 = 0.9;
+    beta2 = 0.999;
+    epsilon = 1e-8;
+    t = 0;
+    T = 0;
+    b1 = beta1;
+    b2 = beta2;
   }
 }

@@ -1,19 +1,22 @@
 package main;
 
 import lib.Error;
-import lib.*;
+import lib.Network;
+import lib.NetworkFactory;
+import lib.Optimizer;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+
 public class TrainMNIST {
-  public static void main(String[] args) throws IOException {
-//    Network network = NetworkFactory.createFrom("mnist-network.txt");
-    Network network = new Network(
-        new int[]{784, 500, 10},
-        new ActivationFunction[]{ActivationFunction.SIGMOID, ActivationFunction.SIGMOID},
-        Initializer.GAUSSIAN);
+  public static void main(String[] args) throws IOException, ClassNotFoundException {
+    Network network = NetworkFactory.fromSerialization("mnist-network.ser");
+//    Network network = new Network(
+//        new int[]{784, 128, 10},
+//        new ActivationFunction[]{ActivationFunction.SIGMOID, ActivationFunction.SIGMOID},
+//        Initializer.GAUSSIAN);
 
     double[][] inputs = new double[42000][784];
     double[][] targets = new double[42000][10];
@@ -32,7 +35,7 @@ public class TrainMNIST {
     }
 
     for (int i = 0; i < 5; i++) {
-      network.train(inputs, targets, 0.01, Error.MEAN_SQUARED, Optimizer.DEMON_MOMENTUM, 50);
+      network.train(inputs, targets, 0.01, Error.MEAN_SQUARED, Optimizer.DEMON_ADAM, 50);
       NetworkFactory.serialize(network, "mnist-network-temp.ser");
     }
 

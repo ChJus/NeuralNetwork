@@ -27,7 +27,11 @@ The resulting activation becomes the input for the neurons in
 the next layer. Notably, we denote each weight $w_{ij}$ connecting the $i\text{th}$ neuron in the current layer to
 the $j\text{th}$ neuron in the next layer. As such, the input to the $j\text{th}$ neuron in the middle layer,
 
-$$o_{j} = \varphi(\text{net}_{j}) = \varphi\left(\sum_{k}{w_{kj}o_{k}}\right).$$
+```math
+o_{j} = \varphi(\text{net}_{j}) = \varphi\left(\sum_{k}{w_{kj}o_{k}}\right).
+```
+
+[//]: # ($$o_{j} = \varphi&#40;\text{net}_{j}&#41; = \varphi\left&#40;\sum_{k}{w_{kj}o_{k}}\right&#41;.$$)
 
 Note that each layer tends to have a _bias_ neuron, whose weight value is simply added to the weighted
 sum $\text{net}$ (alternatively, you can consider its input to always be 1).

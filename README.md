@@ -154,7 +154,7 @@ Default learning rate for `momentum` and `demon momentum` is ~0.01, whilst for `
 #### Momentum
 
 ```math
-\w_{t + 1} = \w_t + \eta v_t
+w_{t + 1} = w_t + \eta v_t
 ```
 
 ```math
@@ -172,7 +172,7 @@ v_t = \beta_2 v_{t-1} + (1 - \beta_2) \left(\frac{\partial E}{\partial w}\right)
 ```
 
 ```math
-\w_{t + 1} = \w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \frac{m_t}{1-\beta^t_1}
+w_{t + 1} = w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \frac{m_t}{1-\beta^t_1}
 ```
 
 Where $t$ increments with each time step. In my implementation, I increment $t$ for each batch update performed. 
@@ -188,7 +188,7 @@ p_t = \frac{T - t}{T}
 ```
 
 ```math
-\w_{t + 1} = \w_t + \eta v_t
+w_{t + 1} = w_t + \eta v_t
 ```
 
 ```math
@@ -217,7 +217,7 @@ v_t = \beta_2 v_{t-1} + (1 - \beta_2) \left(\frac{\partial E}{\partial w}\right)
 ```
 
 ```math
-\w_{t + 1} = \w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \frac{m_t}{1-\beta^t_1}
+w_{t + 1} = w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \frac{m_t}{1-\beta^t_1}
 ```
 
 ### Activation functions

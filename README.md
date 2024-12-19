@@ -66,9 +66,55 @@ adjusted. Notably, a too large $\eta$ would lead to overcorrection of $w_{ij}$, 
 minimizing $E$ over all training examples, whereas a too small $\eta$ would result in minimal adjustments, leading to
 slow learning.
 
-### Optimizers
+We have
+
+```math
+\delta_j = \begin{cases}
+\frac{\partial L(t, o_j)}{\partial o_j}\frac{d\varphi{(\text{net}_j)}}{d\text{net}_j} & \text{if }j \text{ is an output neuron.} \\
+\left(\sum_{l\in L}{w_{jl}\cdot \delta_{l}}\right)\frac{d\varphi{(\text{net}_j)}}{d\text{net}_j} & \text{if }j \text{ is an input neuron.}
+\end{cases}.
+```
+
+Correspondingly, in code:
+
+```java
+if (isOutputLayer) {
+  for (int j = 0; j < weights[0].length; j++) {
+    deltaWeights[j] = error[j] * activationFunction(weightedSumOutput[j], true);
+  }
+} else {
+  for (int j = 0; j < nextLayer.weights.length; j++) {
+    for (int l = 0; l < nextLayer.weights[0].length; l++) {
+      deltaWeights[j] += nextLayer.weights[j][l] * nextLayer.deltaWeights[l];
+    }
+    deltaWeights[j] *= activationFunction(weightedSumOutput[j], true);
+  }
+}
+
+for (int i = 0; i < weights.length; i++) {
+  for (int j = 0; j < weights[i].length; j++) {
+    weightsAdjustments[i][j] += deltaWeights[j] * inputs[i] * -learningRate;
+  }
+}
+
+for (int j = 0; j < biases.length; j++) {
+  biasesAdjustments[j] += deltaWeights[j] * -learningRate;
+}
+```
+
+where `activationFunction(weightedSum, true)` finds the derivative $\frac{d\varphi{(\text{net}_j)}}{d\text{net}_j}$.
 
 ### Loss functions
+
+#### Mean-squared error
+
+```math
+L(t,y) = \sum_{i}(t_i-y_i)^2
+```
+
+### Optimizers
+
+
 
 ### Activation functions
 

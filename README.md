@@ -111,7 +111,10 @@ next layer with $j$ neurons.
 #### Mean-squared error
 
 ```math
-L(t,y) = \sum_{i}(t_i-y_i)^2 \\
+L(t,y) = \sum_{i}(t_i-y_i)^2
+```
+
+```math
 \frac{\partial L(t,y)}{\partial y_i} = 2(y_i - t_i)
 ```
 
@@ -123,7 +126,10 @@ case of categorical cross-entropy
 ([source](https://towardsdatascience.com/deriving-backpropagation-with-cross-entropy-loss-d24811edeaf9)). 
 
 ```math
-L(t,y) = -\sum_{i}{t_i \log(y_i)} \\
+L(t,y) = -\sum_{i}{t_i \log(y_i)}
+```
+
+```math
 \delta_j = \frac{\partial L(t,y)}{\partial y_i}\frac{d\varphi(\text{net}_j)}{d\text{net}_j} = y_i - t_i
 ```
 
@@ -134,6 +140,9 @@ activation** function.
 
 ```math
 L(t,y) = -\sum_{i}{t_i \log(y_i)} - \sum_{i}{(1-t_i)\log(1-y_i)} \\
+```
+
+```math
 \delta_j = \frac{\partial L(t,y)}{\partial y_i}\frac{d\varphi(\text{net}_j)}{d\text{net}_j} = y_i - t_i
 ```
 

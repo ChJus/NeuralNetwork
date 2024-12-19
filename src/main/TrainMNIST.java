@@ -10,10 +10,10 @@ import java.util.Scanner;
 
 public class TrainMNIST {
   public static void main(String[] args) throws IOException, ClassNotFoundException {
-//    Network network = NetworkFactory.fromSerialization("mnist-network.ser");
+//    Network network = NetworkFactory.fromSerialization("mnist-network-temp.ser");
     Network network = new Network(
         new int[]{784, 600, 10},
-        new ActivationFunction[]{ActivationFunction.LEAKY_RELU, ActivationFunction.SIGMOID},
+        new ActivationFunction[]{ActivationFunction.LEAKY_RELU, ActivationFunction.SOFTMAX},
         Initializer.GAUSSIAN);
 
     double[][] inputs = new double[42000][784];
@@ -32,8 +32,8 @@ public class TrainMNIST {
       inputs[i] = vals;
     }
 
-    for (int i = 0; i < 10; i++) {
-      network.train(inputs, targets, 0.001, Error.MEAN_SQUARED, Optimizer.MOMENTUM, 50);
+    for (int i = 0; i < 20; i++) {
+      network.train(inputs, targets, 0.001, Error.CATEGORICAL_CROSS_ENTROPY, Optimizer.DEMON_ADAM, 50);
       NetworkFactory.serialize(network, "mnist-network-temp.ser");
     }
 

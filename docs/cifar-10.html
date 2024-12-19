@@ -80,7 +80,22 @@
           outputs[j] += this.weights[i][j] * inputs[i];
         }
         outputs[j] += this.biases[j];
-        outputs[j] = this.af(outputs[j], false);
+
+        if (this.activationFunction !== "SOFTMAX") {
+          outputs[j] = this.af(outputs[j], false);
+        }
+      }
+
+      if (this.activationFunction === "SOFTMAX") {
+        let max = Math.max(...outputs);
+        for (let i = 0; i < outputs.length; i++) {
+          outputs[i] -= max;
+          outputs[i] = Math.exp(outputs[i]);
+        }
+        let total = outputs.reduce((a, b) => a + b, 0);
+        for (let i = 0; i < outputs.length; i++) {
+          outputs[i] /= total;
+        }
       }
 
       return outputs;

@@ -148,14 +148,77 @@ L(t,y) = -\sum_{i}{t_i \log(y_i)} - \sum_{i}{(1-t_i)\log(1-y_i)}
 
 ### Optimizers
 
+$\beta_1$ is normally set to 0.9; $\beta_2$ is normally set to 0.999; $\epsilon$ is normally set to `1e-8`.
+Default learning rate for `momentum` and `demon momentum` is ~0.01, whilst for `adam`-based updates, is ~0.001.
+
 #### Momentum
+
+```math
+\w_{t + 1} = \w_t + \eta v_t
+```
+
+```math
+v_t = \beta_1 v_{t-1} - \frac{\partial E}{\partial w}
+```
 
 #### Adam
 
+```math
+m_t = \beta_1 m_{t-1} + (1 - \beta_1) \frac{\partial E}{\partial w}
+```
+
+```math
+v_t = \beta_2 v_{t-1} + (1 - \beta_2) \left(\frac{\partial E}{\partial w}\right)^2
+```
+
+```math
+\w_{t + 1} = \w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \frac{m_t}{1-\beta^t_1}
+```
+
+Where $t$ increments with each time step. In my implementation, I increment $t$ for each batch update performed. 
+
 #### Demon Momentum
+
+```math
+p_t = \frac{T - t}{T}
+```
+
+```math
+\beta_t = \beta_1 * \frac{p_t}{(1 - \beta_1) + \beta_1 p_t}
+```
+
+```math
+\w_{t + 1} = \w_t + \eta v_t
+```
+
+```math
+v_t = \beta_t v_{t-1} - \frac{\partial E}{\partial w}
+```
+
+for $T$ representing the total number of time steps in the cycle. In my implementation, I set $T$ to be the number of 
+mini-batches in one epoch (iteration through entire training dataset). 
 
 #### Demon Adam
 
+```math
+p_t = \frac{T - t}{T}
+```
+
+```math
+\beta_t = \beta_1 * \frac{p_t}{(1 - \beta_1) + \beta_1 p_t}
+```
+
+```math
+m_t = \beta_t m_{t-1} + (1 - \beta_1) \frac{\partial E}{\partial w}
+```
+
+```math
+v_t = \beta_2 v_{t-1} + (1 - \beta_2) \left(\frac{\partial E}{\partial w}\right)^2
+```
+
+```math
+\w_{t + 1} = \w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \frac{m_t}{1-\beta^t_1}
+```
 
 ### Activation functions
 
@@ -219,7 +282,7 @@ x & \text{if } x > 0
 Note, the implementation only considers its use with **categorical cross entropy**:
 
 ```math
-\frac{\partial L(t, o_j)}{\partial o_j}\frac{d\varphi{(\text{net}_j)}}{d\text{net}_j} = y_j - t_j
+\frac{\partial L(t, y)}{\partial y_i}\frac{d\varphi{(\text{net}_i)}}{d\text{net}_i} = y_i - t_i
 ```
 
 ### Note on GD, SGD, and mini-batch GD

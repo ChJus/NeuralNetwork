@@ -201,7 +201,7 @@ public class Layer implements Serializable {
     });
 
     for (int j = 0; j < biases.length; j++) {
-      velocity[velocity.length - 1][j] = beta1 * velocity[velocity.length - 1][j] - deltaWeights[j];
+      velocity[velocity.length - 1][j] = betaT * velocity[velocity.length - 1][j] - deltaWeights[j];
       biasesAdjustments[j] += velocity[velocity.length - 1][j] * learningRate;
     }
   }

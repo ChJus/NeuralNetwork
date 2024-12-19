@@ -287,12 +287,31 @@ Note, the implementation only considers its use with **categorical cross entropy
 
 ### Note on GD, SGD, and mini-batch GD
 
+Gradient descent performs updates after an epoch of weight updates is averaged, whereas mini-batch gradient descent does 
+so with smaller batches, and stochastic gradient descent updates parameters after each training example.
+
+### Parallelization
+
+Simple parallelization is implemented through Java's `streams` API:
+
+```java
+IntStream.range(0, weights.length).parallel().forEach(i -> {
+  // Perform operations
+});
+
+// Is equivalent to: 
+for (int i = 0; i < weights.length; i++) {
+  // Perform operations
+}
+```
+
 ### References
 
 - [Backpropagation](https://en.wikipedia.org/wiki/Backpropagation)
 - [Activation functions](https://en.wikipedia.org/wiki/Activation_function)
 - [Optimizers](https://www.ruder.io/optimizing-gradient-descent/)
 - [More on optimizers](https://johnchenresearch.github.io/demon/)
+- [Demon (Decaying momentum)](https://akyrillidis.github.io/pubs/Conferences/Demon.pdf)
 - Cross entropy and backpropagation: 
   [[1]](https://towardsdatascience.com/deriving-backpropagation-with-cross-entropy-loss-d24811edeaf9), 
   [[2]](http://neuralnetworksanddeeplearning.com/chap3.html#eqtn63)

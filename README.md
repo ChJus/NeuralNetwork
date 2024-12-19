@@ -130,7 +130,7 @@ L(t,y) = -\sum_{i}{t_i \log(y_i)}
 ```
 
 ```math
-\delta_j = \frac{\partial L(t,y)}{\partial y_i}\frac{d\varphi(\text{net}_j)}{d\text{net}_j} = y_i - t_i
+\frac{\partial L(t,y)}{\partial y_i} = -\frac{t_i}{y_i}
 ```
 
 #### Multi-class (binary) cross-entropy
@@ -143,7 +143,7 @@ L(t,y) = -\sum_{i}{t_i \log(y_i)} - \sum_{i}{(1-t_i)\log(1-y_i)}
 ```
 
 ```math
-\delta_j = \frac{\partial L(t,y)}{\partial y_i}\frac{d\varphi(\text{net}_j)}{d\text{net}_j} = y_i - t_i
+\frac{\partial L(t,y)}{\partial y_i} = \frac{y_i - t_i}{y_i (1 - y_i)}
 ```
 
 ### Optimizers
@@ -211,6 +211,16 @@ x & \text{if } x > 0
 ```
 
 #### Softmax
+
+```math
+\varphi(x, i) = \frac{e^{x_i}}{\sum_{k}{e^{x_k}}}
+```
+
+Note, the implementation only considers its use with **categorical cross entropy**:
+
+```math
+\frac{\partial L(t, o_j)}{\partial o_j}\frac{d\varphi{(\text{net}_j)}}{d\text{net}_j} = y_j - t_j
+```
 
 ### Note on GD, SGD, and mini-batch GD
 

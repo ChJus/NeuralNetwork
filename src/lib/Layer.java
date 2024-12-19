@@ -83,8 +83,23 @@ public class Layer implements Serializable {
       }
       outputs[j] += biases[j];
       weightedSumOutput[j] = outputs[j];
-      outputs[j] = activationFunction(outputs[j], false);
+
+      if (activationFunction != ActivationFunction.SOFTMAX) {
+        outputs[j] = activationFunction(outputs[j], false);
+      }
     });
+
+    if (activationFunction == ActivationFunction.SOFTMAX) {
+      double max = Arrays.stream(outputs).max().getAsDouble();
+      for (int i = 0; i < outputs.length; i++) {
+        outputs[i] -= max;
+        outputs[i] = Math.exp(outputs[i]);
+      }
+      double total = Arrays.stream(outputs).sum();
+      for (int i = 0; i < outputs.length; i++) {
+        outputs[i] /= total;
+      }
+    }
 
     /*
     for (int j = 0; j < weights[0].length; j++) {
@@ -100,7 +115,7 @@ public class Layer implements Serializable {
     return outputs;
   }
 
-  void learn(Layer nextLayer, double[] error, double learningRate, Optimizer optimizer) {
+  void learn(Layer nextLayer, double[] error, double learningRate, Optimizer optimizer, Error errorFunction) {
     this.learningRate = learningRate;
     Arrays.fill(deltaWeights, 0);
 
@@ -111,7 +126,23 @@ public class Layer implements Serializable {
 
     if (isOutputLayer) {
       for (int j = 0; j < weights[0].length; j++) {
-        deltaWeights[j] = error[j] * activationFunction(weightedSumOutput[j], true);
+        switch (errorFunction) {
+          case MEAN_SQUARED:
+            assert activationFunction != ActivationFunction.SOFTMAX;
+            deltaWeights[j] = error[j] * activationFunction(weightedSumOutput[j], true);
+            break;
+
+          case MULTI_CLASS_CROSS_ENTROPY:
+            assert activationFunction != ActivationFunction.SOFTMAX;
+            if (activationFunction == ActivationFunction.SIGMOID) deltaWeights[j] = error[j];
+            else deltaWeights[j] = error[j] * activationFunction(weightedSumOutput[j], true);
+            break;
+
+          case CATEGORICAL_CROSS_ENTROPY:
+            if (activationFunction == ActivationFunction.SOFTMAX) deltaWeights[j] = error[j];
+            else deltaWeights[j] = error[j] * activationFunction(weightedSumOutput[j], true);
+            break;
+        }
       }
     } else {
       IntStream.range(0, nextLayer.weights.length).parallel().forEach(j -> {

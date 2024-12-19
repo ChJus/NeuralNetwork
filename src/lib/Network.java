@@ -70,12 +70,30 @@ public class Network implements Serializable {
             errorArray[j] = result[j] - targets[i][j];
             printError += Math.pow((result[j] - targets[i][j]), 2) * 0.5;
             break;
+
+          case MULTI_CLASS_CROSS_ENTROPY:
+            if (layers[layers.length - 1].activationFunction == ActivationFunction.SIGMOID)
+              errorArray[j] = result[j] - targets[i][j];
+            else
+              errorArray[j] = (result[j] - targets[i][j]) / (result[j] * (1 - result[j]));
+
+            printError -= targets[i][j] * Math.log(result[j] + 1e-20) + (1 - targets[i][j]) * Math.log(1 - result[j] + 1e-20);
+            break;
+
+          case CATEGORICAL_CROSS_ENTROPY:
+            if (layers[layers.length - 1].activationFunction == ActivationFunction.SOFTMAX)
+              errorArray[j] = result[j] - targets[i][j];
+            else
+              errorArray[j] = -targets[i][j] / result[j];
+
+            printError -= targets[i][j] * Math.log(result[j] + 1e-20);
+            break;
         }
       }
 
-      layers[layers.length - 1].learn(null, errorArray, learningRate, optimizer);
+      layers[layers.length - 1].learn(null, errorArray, learningRate, optimizer, error);
       for (int l = layers.length - 2; l >= 0; l--) {
-        layers[l].learn(layers[l + 1], null, learningRate, optimizer);
+        layers[l].learn(layers[l + 1], null, learningRate, optimizer, null);
       }
 
       if (counter % BATCH_SIZE == 0) {

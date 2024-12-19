@@ -12,8 +12,8 @@ public class TrainMNIST {
   public static void main(String[] args) throws IOException, ClassNotFoundException {
 //    Network network = NetworkFactory.fromSerialization("mnist-network.ser");
     Network network = new Network(
-        new int[]{784, 600, 400, 10},
-        new ActivationFunction[]{ActivationFunction.SIGMOID, ActivationFunction.SIGMOID, ActivationFunction.SIGMOID},
+        new int[]{784, 600, 10},
+        new ActivationFunction[]{ActivationFunction.LEAKY_RELU, ActivationFunction.SIGMOID},
         Initializer.GAUSSIAN);
 
     double[][] inputs = new double[42000][784];
@@ -33,7 +33,7 @@ public class TrainMNIST {
     }
 
     for (int i = 0; i < 10; i++) {
-      network.train(inputs, targets, 0.001, Error.MEAN_SQUARED, Optimizer.DEMON_ADAM, 50);
+      network.train(inputs, targets, 0.001, Error.MEAN_SQUARED, Optimizer.MOMENTUM, 50);
       NetworkFactory.serialize(network, "mnist-network-temp.ser");
     }
 

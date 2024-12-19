@@ -102,21 +102,63 @@ for (int j = 0; j < biases.length; j++) {
 }
 ```
 
-where `activationFunction(weightedSum, true)` finds the derivative $\frac{d\varphi{(\text{net}_j)}}{d\text{net}_j}$.
+where `activationFunction(weightedSum, true)` finds the derivative $\frac{d\varphi{(\text{net}_j)}}{d\text{net}_j}$,
+`weights` is a 2D array of size `[i][j]` and `biases` is an array of size `[j]`, for current layer with $i$ neurons and 
+next layer with $j$ neurons.
 
 ### Loss functions
 
 #### Mean-squared error
 
 ```math
-L(t,y) = \sum_{i}(t_i-y_i)^2
+L(t,y) = \sum_{i}(t_i-y_i)^2 \\
+\frac{\partial L(t,y)}{\partial y_i} = 2(y_i - t_i)
+```
+
+#### Categorical cross-entropy
+
+Used when examples can only be classified as one of several possible classification classes (one-hot encoding). 
+Notably **used with `softmax` activation function**. Note that _binary cross-entropy_ with two classes is simply a special 
+case of categorical cross-entropy 
+([source](https://towardsdatascience.com/deriving-backpropagation-with-cross-entropy-loss-d24811edeaf9)). 
+
+```math
+L(t,y) = -\sum_{i}{t_i \log(y_i)} \\
+\delta_j = \frac{\partial L(t,y)}{\partial y_i}\frac{d\varphi(\text{net}_j)}{d\text{net}_j} = y_i - t_i
+```
+
+#### Multi-class (binary) cross-entropy
+
+Used when examples can be classified as several of possible classification classes. Notably **used with `sigmoid` 
+activation** function.
+
+```math
+L(t,y) = -\sum_{i}{t_i \log(y_i)} - \sum_{i}{(1-t_i)\log(1-y_i)} \\
+\delta_j = \frac{\partial L(t,y)}{\partial y_i}\frac{d\varphi(\text{net}_j)}{d\text{net}_j} = y_i - t_i
 ```
 
 ### Optimizers
 
+#### Momentum
+
+#### Adam
+
+#### Demon Momentum
+
+#### Demon Adam
 
 
 ### Activation functions
+
+#### Sigmoid
+
+#### Tanh
+
+#### ReLU
+
+#### Leaky-ReLU
+
+#### Softmax
 
 ### Note on GD, SGD, and mini-batch GD
 
@@ -126,5 +168,8 @@ L(t,y) = \sum_{i}(t_i-y_i)^2
 - [Activation functions](https://en.wikipedia.org/wiki/Activation_function)
 - [Optimizers](https://www.ruder.io/optimizing-gradient-descent/)
 - [More on optimizers](https://johnchenresearch.github.io/demon/)
+- Cross entropy and backpropagation: 
+  [[1]](https://towardsdatascience.com/deriving-backpropagation-with-cross-entropy-loss-d24811edeaf9), 
+  [[2]](http://neuralnetworksanddeeplearning.com/chap3.html#eqtn63)
 - Based off Y8 me’s overcomplicated (and likely
   inaccurate) [code](https://github.com/JC-ProgJava/Building-Neural-Networks-From-Scratch).

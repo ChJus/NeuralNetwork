@@ -17,21 +17,17 @@ weighted input sum (denoted $\text{net}$, the sum of the products of correspondi
 _activation function_ $\varphi$ to constrain the weighted input within a certain fixed range. A popular choice
 of $\varphi$ is the sigmoid activation function:
 
-```math 
-\sigma(x) = \frac{1}{1+e^{-x}},
-```
+$$\sigma(x) = \frac{1}{1+e^{-x}},$$
 
 which constrains values to be between 0 and 1 (useful, e.g., when you want the network to output a probability that an
 input is from a classification class). You may refer to other activation functions in
 the [corresponding section](#activation-functions) below.
 
 The resulting activation becomes the input for the neurons in
-the next layer. Notably, we denote each weight $w_{ij}$ connecting the $i$th neuron in the current layer to the $j$th
-neuron in the next layer. As such, the input to the $j$th neuron in the middle layer,
+the next layer. Notably, we denote each weight $w_{ij}$ connecting the $i\text{th}$ neuron in the current layer to
+the $j\text{th}$ neuron in the next layer. As such, the input to the $j\text{th}$ neuron in the middle layer,
 
-```math 
-o_j = \varphi(\text{net}_j) = \varphi\left(\sum_{k}{w_{kj}o_k}\right).
-```
+$$o_j = \varphi(\text{net}_j) = \varphi\left(\sum_{k}{w_{kj}o_k}\right).$$
 
 Note that each layer tends to have a _bias_ neuron, whose weight value is simply added to the weighted
 sum $\text{net}$ (alternatively, you can consider its input to always be 1).

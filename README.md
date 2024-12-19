@@ -164,15 +164,15 @@ v_t = \beta_1 v_{t-1} - \frac{\partial E}{\partial w}
 #### Adam
 
 ```math
-m_t = \beta_1 m_{t-1} + (1 - \beta_1) \frac{\partial E}{\partial w}
+m_t = \beta_1 m_{t-1} + (1 - \beta_1)\cdot \frac{\partial E}{\partial w}
 ```
 
 ```math
-v_t = \beta_2 v_{t-1} + (1 - \beta_2) \left(\frac{\partial E}{\partial w}\right)^2
+v_t = \beta_2 v_{t-1} + (1 - \beta_2)\cdot \left(\frac{\partial E}{\partial w}\right)^2
 ```
 
 ```math
-w_{t + 1} = w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \frac{m_t}{1-\beta^t_1}
+w_{t + 1} = w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \cdot \frac{m_t}{1-\beta^t_1}
 ```
 
 Where $t$ increments with each time step. In my implementation, I increment $t$ for each batch update performed. 
@@ -184,7 +184,7 @@ p_t = \frac{T - t}{T}
 ```
 
 ```math
-\beta_t = \beta_1 * \frac{p_t}{(1 - \beta_1) + \beta_1 p_t}
+\beta_t = \beta_1 \cdot \frac{p_t}{(1 - \beta_1) + \beta_1 p_t}
 ```
 
 ```math
@@ -205,19 +205,19 @@ p_t = \frac{T - t}{T}
 ```
 
 ```math
-\beta_t = \beta_1 * \frac{p_t}{(1 - \beta_1) + \beta_1 p_t}
+\beta_t = \beta_1 \cdot \frac{p_t}{(1 - \beta_1) + \beta_1 p_t}
 ```
 
 ```math
-m_t = \beta_t m_{t-1} + (1 - \beta_1) \frac{\partial E}{\partial w}
+m_t = \beta_t m_{t-1} + (1 - \beta_1)\cdot \frac{\partial E}{\partial w}
 ```
 
 ```math
-v_t = \beta_2 v_{t-1} + (1 - \beta_2) \left(\frac{\partial E}{\partial w}\right)^2
+v_t = \beta_2 v_{t-1} + (1 - \beta_2)\cdot \left(\frac{\partial E}{\partial w}\right)^2
 ```
 
 ```math
-w_{t + 1} = w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \frac{m_t}{1-\beta^t_1}
+w_{t + 1} = w_t - \frac{\eta}{\sqrt{\frac{v_t}{1-\beta^t_2}} + \epsilon} \cdot \frac{m_t}{1-\beta^t_1}
 ```
 
 ### Activation functions

@@ -154,11 +154,11 @@ Default learning rate for `momentum` and `demon momentum` is ~0.01, whilst for `
 #### Momentum
 
 ```math
-w_{t + 1} = w_t + \eta v_t
+v_t = \beta_1 v_{t-1} - \frac{\partial E}{\partial w}
 ```
 
 ```math
-v_t = \beta_1 v_{t-1} - \frac{\partial E}{\partial w}
+w_{t + 1} = w_t + \eta v_t
 ```
 
 #### Adam
@@ -188,11 +188,11 @@ p_t = \frac{T - t}{T}
 ```
 
 ```math
-w_{t + 1} = w_t + \eta v_t
+v_t = \beta_t v_{t-1} - \frac{\partial E}{\partial w}
 ```
 
 ```math
-v_t = \beta_t v_{t-1} - \frac{\partial E}{\partial w}
+w_{t + 1} = w_t + \eta v_t
 ```
 
 for $T$ representing the total number of time steps in the cycle. In my implementation, I set $T$ to be the number of 

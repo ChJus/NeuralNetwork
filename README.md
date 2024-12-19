@@ -27,7 +27,7 @@ The resulting activation becomes the input for the neurons in
 the next layer. Notably, we denote each weight $w_{ij}$ connecting the $i\text{th}$ neuron in the current layer to
 the $j\text{th}$ neuron in the next layer. As such, the input to the $j\text{th}$ neuron in the middle layer,
 
-$$o_j = \varphi(\text{net}_{j}) = \varphi\left(\sum_{k}{w_{kj}o_{k}}\right).$$
+$$o_{j} = \varphi(\text{net}_{j}) = \varphi\left(\sum_{k}{w_{kj}o_{k}}\right).$$
 
 Note that each layer tends to have a _bias_ neuron, whose weight value is simply added to the weighted
 sum $\text{net}$ (alternatively, you can consider its input to always be 1).
@@ -43,15 +43,25 @@ For a network to learn, its adjustable parameters (the weights) are altered base
 errors. Particularly, the goal in the learning process is to minimize error $E=L(t,y)$, where $L$ represents a _loss
 function_ that computes error based on the desired target output $t$ and predicted output $y$.
 
-For example, the partial
-derivative $$\frac{\partial E}{\partial w_{ij}}= \underbrace{\frac{\partial E}{\partial o_j} \frac{\partial o_j}{
-\partial \text{net}_{j}}}_{\delta_j} \underbrace{\frac{\partial \text{net}_{j}}{\partial w_{ij}}}_{o_i}$$ represents the
-sensitivity of $E$ with respect to changes to $w_{ij}$. We update the weight $w_{ij}$
-as $$w_{ij} = w_{ij} + \Delta w_{ij},$$ with $$\Delta w_{ij} = -\eta \frac{\partial E}{\partial w_{ij}}.$$ Notably, the
-negative sign ensures the weight is updated such that the error $E$ as caused by $w_{ij}$ is reduced. The factor $\eta$
-is referred to as _step size_ or _learning rate_, and controls the degree to which the weight $w_{ij}$ is adjusted.
-Notably, a too large $\eta$ would lead to overcorrection of $w_{ij}$, which may lead to difficulty in minimizing $E$
-over all training examples, whereas a too small $\eta$ would result in minimal adjustments, leading to slow learning.
+For example, the partial derivative
+
+$$\frac{\partial E}{\partial w_{ij}}= \underbrace{\frac{\partial E}{\partial o_j} \frac{\partial o_j}{
+\partial \text{net}_{j}}}_{\delta_j} \underbrace{\frac{\partial \text{net}_{j}}{\partial w_{ij}}}_{o_i}$$
+
+represents the sensitivity of $E$ with respect to changes to $w_{ij}$. We update the weight $w_{ij}$
+as
+
+$$w_{ij} = w_{ij} + \Delta w_{ij},$$
+
+with
+
+$$\Delta w_{ij} = -\eta \frac{\partial E}{\partial w_{ij}}.$$
+
+Notably, the negative sign ensures the weight is updated such that the error $E$ as caused by $w_{ij}$ is reduced. The
+factor $\eta$ is referred to as _step size_ or _learning rate_, and controls the degree to which the weight $w_{ij}$ is
+adjusted. Notably, a too large $\eta$ would lead to overcorrection of $w_{ij}$, which may lead to difficulty in
+minimizing $E$ over all training examples, whereas a too small $\eta$ would result in minimal adjustments, leading to
+slow learning.
 
 ### Optimizers
 

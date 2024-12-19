@@ -31,8 +31,6 @@ the $j\text{th}$ neuron in the next layer. As such, the input to the $j\text{th}
 o_{j} = \varphi(\text{net}_{j}) = \varphi\left(\sum_{k}{w_{kj}o_{k}}\right).
 ```
 
-[//]: # ($$o_{j} = \varphi&#40;\text{net}_{j}&#41; = \varphi\left&#40;\sum_{k}{w_{kj}o_{k}}\right&#41;.$$)
-
 Note that each layer tends to have a _bias_ neuron, whose weight value is simply added to the weighted
 sum $\text{net}$ (alternatively, you can consider its input to always be 1).
 
@@ -49,11 +47,12 @@ function_ that computes error based on the desired target output $t$ and predict
 
 For example, the partial derivative
 
-$$\frac{\partial E}{\partial w_{ij}}= \underbrace{\frac{\partial E}{\partial o_j} \frac{\partial o_j}{
-\partial \text{net}_{j}}}_{\delta_j} \underbrace{\frac{\partial \text{net}_{j}}{\partial w_{ij}}}_{o_i}$$
+```math
+\frac{\partial E}{\partial w_{ij}}= \underbrace{\frac{\partial E}{\partial o_j} \frac{\partial o_j}{
+\partial \text{net}_{j}}}_{\delta_j} \underbrace{\frac{\partial \text{net}_{j}}{\partial w_{ij}}}_{o_i}
+```
 
-represents the sensitivity of $E$ with respect to changes to $w_{ij}$. We update the weight $w_{ij}$
-as
+represents the sensitivity of $E$ with respect to changes to $w_{ij}$. We update the weight $w_{ij}$ as
 
 $$w_{ij} = w_{ij} + \Delta w_{ij},$$
 

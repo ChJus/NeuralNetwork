@@ -139,7 +139,7 @@ Used when examples can be classified as several of possible classification class
 activation** function.
 
 ```math
-L(t,y) = -\sum_{i}{t_i \log(y_i)} - \sum_{i}{(1-t_i)\log(1-y_i)} \\
+L(t,y) = -\sum_{i}{t_i \log(y_i)} - \sum_{i}{(1-t_i)\log(1-y_i)}
 ```
 
 ```math
@@ -159,13 +159,56 @@ L(t,y) = -\sum_{i}{t_i \log(y_i)} - \sum_{i}{(1-t_i)\log(1-y_i)} \\
 
 ### Activation functions
 
+Let $x$ be $\text{net}$.
+
 #### Sigmoid
+
+```math
+\varphi(x) = \frac{1}{1+e^{-x}}
+```
+
+```math
+\varphi'(x) = \varphi(x)(1-\varphi(x)) 
+```
 
 #### Tanh
 
+```math
+\varphi(x) = \frac{e^x - e^{-x}}{e^x+e^{-x}}
+```
+
+```math
+\varphi'(x) = 1 - \varphi(x)^2 
+```
+
 #### ReLU
 
+```math
+\varphi(x) = \max(0, x)
+```
+
+```math
+\varphi'(x) = \begin{cases}
+0 & \text{if } x < 0 \\
+1 & \text{if } x > 0
+\end{cases}
+```
+
 #### Leaky-ReLU
+
+```math
+\varphi(x) = \begin{cases}
+0.01x & \text{if } x < 0 \\
+x & \text{if } x > 0
+\end{cases}
+```
+
+```math
+\varphi'(x) = \begin{cases}
+0.01 & \text{if } x < 0 \\
+1 & \text{if } x > 0
+\end{cases}
+```
 
 #### Softmax
 

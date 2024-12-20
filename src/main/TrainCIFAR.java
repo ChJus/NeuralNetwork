@@ -12,11 +12,11 @@ import java.io.ObjectInputStream;
 public class TrainCIFAR {
   public static void main(String[] args) throws IOException, ClassNotFoundException {
 //    Network network = new Network(
-//        new int[]{3072, 1400, 1000, 500, 10},
-//        new lib.ActivationFunction[]{lib.ActivationFunction.SIGMOID, lib.ActivationFunction.SIGMOID, lib.ActivationFunction.SIGMOID, lib.ActivationFunction.SIGMOID},
+//        new int[]{3072, 1500, 10},
+//        new lib.ActivationFunction[]{ActivationFunction.LEAKY_RELU, ActivationFunction.SOFTMAX},
 //        lib.Initializer.GAUSSIAN);
 
-    Network network = NetworkFactory.fromSerialization("cifar-10-network-temp.ser");
+    Network network = NetworkFactory.fromSerialization("cifar-10-network.ser");
 //    Network network = NetworkFactory.createFrom("cifar-10-network.txt");
 
     ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("input-cifar10.ser"));
@@ -28,7 +28,7 @@ public class TrainCIFAR {
     objectInputStream.close();
 
     for (int i = 0; i < 5; i++) {
-      network.train(input, target, 0.001, Error.MEAN_SQUARED, Optimizer.MOMENTUM, 100);
+      network.train(input, target, 0.001, Error.CATEGORICAL_CROSS_ENTROPY, Optimizer.DEMON_ADAM, 100);
       NetworkFactory.serialize(network, "cifar-10-network-temp.ser");
     }
 

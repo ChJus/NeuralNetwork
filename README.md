@@ -317,3 +317,14 @@ for (int i = 0; i < weights.length; i++) {
   [[2]](http://neuralnetworksanddeeplearning.com/chap3.html#eqtn63)
 - Based off Y8 me’s overcomplicated (and likely
   inaccurate) [code](https://github.com/JC-ProgJava/Building-Neural-Networks-From-Scratch).
+
+## What next?
+
+Some other ideas to experiment with:
+
+- Use of various techniques to reduce overfitting — Dropout; L1 & L2 Regularization; Data Preprocessing & Augmentation
+- Different Neural Network architectures/variants — Generative Adversarial Networks (GANs); Convolutional Neural Networks (CNNs); Recurrent Neural Networks (RNNs) and Long short-term memory variant (LSTM); Residual Neural Networks; Transformers
+- Different learning methods — Supervised; Unsupervised; Reinforcement
+- Consideration regarding the importance of data — is it possible to reduce number of training examples yet achieve similar performance results?
+- Consideration regarding complexity of models — is it possible to reduce computational resources on training/running models yet retain similar performance results?
+- How can a general model by trained to achieve generalized intelligence? (think ARC-AGI benchmarks)

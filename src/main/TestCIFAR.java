@@ -1,6 +1,7 @@
 package main;
 
 import lib.Network;
+import lib.NetworkFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -25,6 +26,8 @@ public class TestCIFAR {
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream("cifar-10-network-temp.ser"));
     Network network = (Network) ois.readObject();
     ois.close();
+
+    NetworkFactory.export(network, "cifar-10-network.txt");
 
     FileWriter fw = new FileWriter("out.csv");
     fw.write("id,label\n");

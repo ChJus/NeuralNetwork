@@ -37,7 +37,8 @@ sum $\text{net}$ (alternatively, you can consider its input to always be 1).
 ### Feedforward
 
 In both the learning and classification stage, an example input array/vector is fed as input to the first layer, and
-through the weighted sum and activation processes described previously, result in an output vector in the final layer.
+through the weighted sum and activation processes described previously, becomes the input vector for the succeeding 
+layer, finally resulting in an output vector in the final layer.
 
 ### Backpropagation
 
@@ -323,8 +324,12 @@ for (int i = 0; i < weights.length; i++) {
 Some other ideas to experiment with:
 
 - Use of various techniques to reduce overfitting — Dropout; L1 & L2 Regularization; Data Preprocessing & Augmentation
-- Different Neural Network architectures/variants — Generative Adversarial Networks (GANs); Convolutional Neural Networks (CNNs); Recurrent Neural Networks (RNNs) and Long short-term memory variant (LSTM); Residual Neural Networks; Transformers
+- Different Neural Network architectures/variants — Generative Adversarial Networks (GANs); Convolutional Neural 
+  Networks (CNNs); Recurrent Neural Networks (RNNs) and Long short-term memory variant (LSTM); Residual Neural Networks; 
+  Transformers
 - Different learning methods — Supervised; Unsupervised; Reinforcement
-- Consideration regarding the importance of data — is it possible to reduce number of training examples yet achieve similar performance results?
-- Consideration regarding complexity of models — is it possible to reduce computational resources on training/running models yet retain similar performance results?
+- Consideration regarding the importance of data — is it possible to reduce number of training examples yet achieve 
+  similar performance results?
+- Consideration regarding complexity of models — is it possible to reduce computational resources on training/running 
+  models yet retain similar performance results?
 - How can a general model by trained to achieve generalized intelligence? (think ARC-AGI benchmarks)

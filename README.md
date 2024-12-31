@@ -333,3 +333,15 @@ Some other ideas to experiment with:
 - Consideration regarding complexity of models — is it possible to reduce computational resources on training/running 
   models yet retain similar performance results?
 - How can a general model by trained to achieve generalized intelligence? (think ARC-AGI benchmarks)
+
+### Further references and experimentation ideas
+
+- [Dive into Deep Learning](https://d2l.ai/) — notably, references to CNNs, RNNs, LSTMs, GANs, Transformers, 
+  Computer Vision, Reinforcement Learning, Dropout
+- Object detection and recognition — forms the basis of Optical Character Recognition (OCR) systems. Apart from being
+  able to recognize specific characters, there also needs to be a model that is able to detect the position of
+  characters in an input image (i.e., a model able to find bounding boxes of characters within an image to recognize).
+  - Models for bounding box detection — [Single-shot multi-box detection](https://d2l.ai/chapter_computer-vision/ssd.html),
+    Region-based CNNs ([[1]](https://d2l.ai/chapter_computer-vision/rcnn.html), 
+    [[2]](https://en.wikipedia.org/wiki/Region_Based_Convolutional_Neural_Networks)), 
+    [YOLO](https://en.wikipedia.org/wiki/You_Only_Look_Once)

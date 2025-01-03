@@ -333,6 +333,11 @@ Some other ideas to experiment with:
 - Consideration regarding complexity of models — is it possible to reduce computational resources on training/running 
   models yet retain similar performance results?
 - How can a general model by trained to achieve generalized intelligence? (think ARC-AGI benchmarks)
+- [Art of the Problem](https://www.youtube.com/@ArtOfTheProblem) series on neural networks mentions accelerated learning
+  for robots using reinforcement learning by running simulations where physical properties are altered, allowing trained
+  models to better adapt to the natural environment, which is often much different from training examples. Could a
+  similar technique be applied to augment image data (e.g., randomly alter image color/positioning/dilation/skewing) and
+  improve model generalization? (Would be similar to dropout and data augmentation techniques to reduce model overfitting.)
 
 ### Further references and experimentation ideas
 

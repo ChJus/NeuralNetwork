@@ -16,7 +16,7 @@ public final class NetworkFactory {
     return network;
   }
 
-  public static Network createFrom(String textFilepath) throws IOException {
+  public static Network fromTextFile(String textFilepath) throws IOException {
     Scanner in = new Scanner(new File(textFilepath));
     String[] build = in.nextLine().split(" ");
     String[] activations = in.nextLine().split(" ");

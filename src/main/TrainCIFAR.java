@@ -17,7 +17,7 @@ public class TrainCIFAR {
 //        lib.Initializer.GAUSSIAN);
 
     Network network = NetworkFactory.fromSerialization("cifar-10-network.ser");
-//    Network network = NetworkFactory.createFrom("cifar-10-network.txt");
+//    Network network = NetworkFactory.fromTextFile("cifar-10-network.txt");
 
     ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("input-cifar10.ser"));
     double[][] input = (double[][]) objectInputStream.readObject();

@@ -317,7 +317,7 @@ for (int i = 0; i < weights.length; i++) {
   [[1]](https://towardsdatascience.com/deriving-backpropagation-with-cross-entropy-loss-d24811edeaf9), 
   [[2]](http://neuralnetworksanddeeplearning.com/chap3.html#eqtn63)
 - Based off Y8 me’s overcomplicated (and likely
-  inaccurate) [code](https://github.com/JC-ProgJava/Building-Neural-Networks-From-Scratch).
+  inaccurate) [code](https://github.com/ChJus/Building-Neural-Networks-From-Scratch).
 
 ## What next?
 
